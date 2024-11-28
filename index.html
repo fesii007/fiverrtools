@@ -1,506 +1,166 @@
-<html><head><base href="." /><title>AI-Powered Fiverr Gig Creator</title>
-<style>
-  body {
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    padding: 20px;
-    background: #f4f7f9;
-    color: #2c3e50;
-  }
-  
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  }
-  
-  .title-section {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-
-  h1 {
-    color: #1dbf73;
-    margin-bottom: 10px; /* Reduce bottom margin of h1 */
-    text-align: center;
-  }
-
-  .subtitle {
-    color: #666;
-    font-size: 18px;
-    line-height: 1.6;
-    max-width: 600px;
-    margin: 0 auto;
-    animation: fadeIn 0.8s ease;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .input-section {
-    margin-bottom: 30px;
-  }
-  
-  textarea {
-    width: 100%;
-    padding: 15px;
-    border: 2px solid #e4e5e7;
-    border-radius: 8px;
-    min-height: 100px;
-    font-size: 16px;
-    margin-bottom: 20px;
-  }
-  
-  button {
-    background: #1dbf73;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: all 0.3s;
-    margin-right: 10px;
-  }
-  
-  button:hover {
-    background: #19a463;
-    transform: translateY(-2px);
-  }
-
-  .regenerate-btn {
-    background: #3498db;
-    font-size: 14px;
-    padding: 8px 16px;
-  }
-
-  .regenerate-btn:hover {
-    background: #2980b9;
-  }
-
-  .download-btn {
-    background: #2ecc71;
-  }
-
-  .download-btn:hover {
-    background: #27ae60;
-  }
-  
-  .result-section {
-    display: none;
-    margin-top: 30px;
-    padding: 20px;
-    border: 2px solid #e4e5e7;
-    border-radius: 8px;
-  }
-  
-  .loading {
-    display: none;
-    text-align: center;
-    margin: 20px 0;
-  }
-  
-  .loading svg {
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
-  .result-item {
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeSlideIn 0.5s ease forwards;
-    padding: 25px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    transition: all 0.3s ease;
-    margin-bottom: 20px;
-  }
-
-  .result-item:hover {
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-  }
-
-  @keyframes fadeSlideIn {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .result-item:nth-child(1) { animation-delay: 0.1s; }
-  .result-item:nth-child(2) { animation-delay: 0.2s; }
-  .result-item:nth-child(3) { animation-delay: 0.3s; }
-
-  #gigTitle {
-    font-size: 22px;
-    color: #1dbf73;
-    font-weight: 600;
-    padding: 20px;
-    background: linear-gradient(to right, #f8f9fa, #ffffff);
-    border-radius: 8px;
-    border-left: 4px solid #1dbf73;
-    margin: 10px 0;
-    line-height: 1.4;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    animation: slideIn 0.5s ease;
-  }
-
-  #gigTitle:hover {
-    transform: translateX(5px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  }
-
-  @keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-  }
-
-  .result-item h3 {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 20px;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #f0f2f5;
-  }
-
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
-  }
-
-  .tag {
-    background: linear-gradient(135deg, #f0f2f5, #e4e5e7);
-    padding: 8px 16px;
-    border-radius: 25px;
-    font-size: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    min-width: 140px;
-  }
-
-  .tag:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  }
-
-  .tag-name {
-    font-weight: 600;
-    color: #2c3e50;
-  }
-
-  .tag-stats {
-    font-size: 12px;
-    display: flex;
-    gap: 8px;
-  }
-
-  .tag-stat {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    color: #666;
-  }
-
-  .tag-stat svg {
-    width: 12px;
-    height: 12px;
-  }
-</style>
+<!DOCTYPE html>
+<html>
+<head>
+    <base href="." />
+    <title>AI-Powered Fiverr Gig Creator</title>
+    <style>
+        /* Same styles as provided */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f4f7f9;
+            color: #2c3e50;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .title-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        h1 {
+            color: #1dbf73;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeIn 0.8s ease;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .input-section {
+            margin-bottom: 30px;
+        }
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e4e5e7;
+            border-radius: 8px;
+            min-height: 100px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #1dbf73;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #19a463;
+            transform: translateY(-2px);
+        }
+        .result-section {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px solid #e4e5e7;
+            border-radius: 8px;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .loading svg {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="title-section">
-      <h1>AI-Powered Fiverr Gig Creator</h1>
-      <p class="subtitle">
-        Transform your service idea into a professional Fiverr gig in seconds. 
-        Just enter a few words about your gig, and instantly get an optimized title, 
-        compelling description, and trending tags that sell.
-      </p>
+    <div class="container">
+        <div class="title-section">
+            <h1>AI-Powered Fiverr Gig Creator</h1>
+            <p class="subtitle">
+                Transform your service idea into a professional Fiverr gig in seconds. 
+                Just enter a few words about your gig, and instantly get an optimized title, 
+                compelling description, and trending tags that sell.
+            </p>
+        </div>
+        <div class="input-section">
+            <textarea id="gigInput" placeholder="Enter your gig idea or title"></textarea>
+            <button onclick="generateGig()">Generate Perfect Gig</button>
+        </div>
+        <div class="loading" id="loading">
+            <svg width="40" height="40" viewBox="0 0 50 50">
+                <circle cx="25" cy="25" r="20" fill="none" stroke="#1dbf73" stroke-width="5" stroke-linecap="round" />
+            </svg>
+        </div>
+        <div class="result-section" id="resultSection">
+            <h3>Generated Title</h3>
+            <div id="gigTitle"></div>
+        </div>
     </div>
-    
-    <div class="input-section">
-      <textarea id="gigInput" placeholder="Enter your gig idea or title (e.g., 'I will create professional logo designs' or 'Logo design service')"></textarea>
-      <button onclick="generateGig()">Generate Perfect Gig</button>
-    </div>
-    
-    <div class="loading" id="loading">
-      <svg width="40" height="40" viewBox="0 0 50 50">
-        <circle cx="25" cy="25" r="20" fill="none" stroke="#1dbf73" stroke-width="5" stroke-linecap="round" />
-      </svg>
-    </div>
-    
-    <div class="result-section" id="resultSection">
-      <div class="result-item">
-        <h3>
-          Title
-          <button class="regenerate-btn" onclick="regenerateSection('title')">Regenerate</button>
-        </h3>
-        <div id="gigTitle"></div>
-      </div>
-      
-      <div class="result-item">
-        <h3>
-          Description
-          <button class="regenerate-btn" onclick="regenerateSection('description')">Regenerate</button>
-        </h3>
-        <div id="gigDescription"></div>
-      </div>
-      
-      <div class="result-item">
-        <h3>
-          Tags
-          <button class="regenerate-btn" onclick="regenerateSection('tags')">Regenerate</button>
-        </h3>
-        <div class="tags" id="gigTags"></div>
-      </div>
-    </div>
-  </div>
+    <script>
+        const API_KEY = "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";
 
-<script>
-let currentTitle = '';
-
-async function generateGig() {
-    const input = document.getElementById('gigInput').value;
-    if (!input) {
-        alert('Please enter your gig idea first!');
-        return;
-    }
-
-    document.getElementById('loading').style.display = 'block';
-    document.getElementById('resultSection').style.display = 'none';
-
-    try {
-        await generateAllSections(input);
-        
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('resultSection').style.display = 'block';
-    } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while generating the gig content. Please try again.');
-        document.getElementById('loading').style.display = 'none';
-    }
-}
-
-async function generateAllSections(input) {
-    const titleData = await generateTitle(input);
-    currentTitle = titleData.title;
-    
-    await Promise.all([
-        generateDescription(input),
-        generateTags(input)
-    ]);
-}
-
-async function generateTitle(input) {
-    const response = await fetch('/api/ai_completion', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            prompt: `Create a short, punchy Fiverr gig title optimized for the search algorithm. 
-            Key requirements:
-            - Keep it between 40-60 characters (ideal length for Fiverr)
-            - Start with "I will" to match Fiverr's preferred format
-            - Use high-converting action words (create, design, develop, etc.)
-            - Focus on the main service and key benefit
-            - Use natural, searchable language
-            - No emojis or special characters
-            - Make each generation unique and different
-            
-            Title Structure Guidelines:
-            - "I will [action verb] your [deliverable] with [key benefit/feature]"
-            - Keep it concise but descriptive
-            - Include one main keyword for SEO
-            
-            <typescript-interface>
-            interface Response {
-                title: string;
+        async function generateGig() {
+            const input = document.getElementById('gigInput').value;
+            if (!input) {
+                alert('Please enter your gig idea first!');
+                return;
             }
-            </typescript-interface>
-            
-            <example>
-            {
-                "title": "I will design your modern minimalist business logo"
-            }
-            </example>`,
-            data: input
-        })
-    });
-    const data = await response.json();
-    document.getElementById('gigTitle').textContent = data.title;
-    return data;
-}
 
-async function generateDescription(input) {
-    const response = await fetch('/api/ai_completion', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            prompt: `Create a unique, compelling Fiverr gig description that's different from standard templates. Use a natural, conversational tone that builds trust. Focus on value and benefits. Include social proof and clear deliverables. Keep it under 1200 characters. No emojis or fancy formatting.
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultSection').style.display = 'none';
 
-            Requirements for uniqueness:
-            - Generate a completely different structure and approach each time
-            - Vary the opening hooks and closing calls-to-action
-            - Use different value propositions and benefit statements
-            - Alternate between various writing styles while maintaining professionalism
-            - Mix up the order of information presentation
-            
-            Key points to always include:
-            - Unique opening hook
-            - Clear value proposition
-            - Specific deliverables
-            - Your expertise/experience
-            - Process explanation
-            - Call to action
-            
-            <typescript-interface>
-            interface Response {
-                description: string;
-            }
-            </typescript-interface>
-            
-            <example>
-            {
-                "description": "Want to transform your brand's presence without breaking the bank? I've got you covered.\n\nWith 5+ years of design expertise and a portfolio of 1,000+ successful projects, I specialize in creating logos that capture attention and drive business growth.\n\nWhat You'll Get:\n• 4 distinct concept designs\n• Unlimited revisions\n• Complete source files (AI, EPS, PNG, JPG)\n• Commercial usage rights\n• Brand identity guide\n• Social media kit\n\nMy Approach:\n1. Understanding your vision through detailed consultation\n2. Research your industry and competitors\n3. Create unique concepts that stand out\n4. Refine until perfection\n\nWhy Choose Me:\n• Quick 48-hour initial concepts\n• Direct, honest communication\n• Modern, versatile design style\n• 100% satisfaction guarantee\n\nBonus: Order now and get a free social media cover design!\n\nReady to elevate your brand? Let's start creating your perfect logo today."
-            }
-            </example>`,
-            data: input
-        })
-    });
-    const data = await response.json();
-    document.getElementById('gigDescription').innerHTML = data.description.replace(/\n/g, '<br>');
-    return data;
-}
-
-async function generateTags(input) {
-    const response = await fetch('/api/ai_completion', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            prompt: `Generate 5 commonly searched, relevant Fiverr tags for this gig. Use simple, popular search terms that real buyers use. Include realistic search statistics.
-            
-            <typescript-interface>
-            interface TagStats {
-                name: string;
-                searchVolume: number;
-                competition: number;
-                trending: boolean;
-            }
-            
-            interface Response {
-                tags: TagStats[];
-            }
-            </typescript-interface>
-            
-            <example>
-            {
-                "tags": [
-                    {
-                        "name": "logo design",
-                        "searchVolume": 12000,
-                        "competition": 82,
-                        "trending": true
+            try {
+                const response = await fetch('https://api.openai.com/v1/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
                     },
-                    {
-                        "name": "business logo",
-                        "searchVolume": 8500,
-                        "competition": 75,
-                        "trending": false
-                    }
-                ]
-            }
-            </example>`,
-            data: input
-        })
-    });
-    const data = await response.json();
-    
-    const tagsContainer = document.getElementById('gigTags');
-    tagsContainer.innerHTML = '';
-    
-    data.tags.forEach((tag, index) => {
-        const tagElement = document.createElement('div');
-        tagElement.className = 'tag';
-        tagElement.style.animationDelay = `${index * 0.1}s`;
-        
-        tagElement.innerHTML = `
-            <span class="tag-name">${tag.name}</span>
-            <div class="tag-stats">
-                <span class="tag-stat" title="Monthly Searches">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                    </svg>
-                    ${tag.searchVolume.toLocaleString()}
-                </span>
-                <span class="tag-stat" title="Competition Level">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-                    </svg>
-                    ${tag.competition}%
-                </span>
-                ${tag.trending ? `
-                <span class="tag-stat" title="Trending">
-                    <svg viewBox="0 0 24 24" fill="#e74c3c">
-                        <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
-                    </svg>
-                </span>
-                ` : ''}
-            </div>
-        `;
-        tagsContainer.appendChild(tagElement);
-    });
-    return data;
-}
+                    body: JSON.stringify({
+                        model: "text-davinci-003",
+                        prompt: `Generate a Fiverr gig title for this input: "${input}". The title should be engaging and optimized for Fiverr search.`,
+                        max_tokens: 50,
+                        temperature: 0.7
+                    })
+                });
 
-async function regenerateSection(section) {
-    const input = document.getElementById('gigInput').value;
-    switch(section) {
-        case 'title':
-            const titleData = await generateTitle(input);
-            currentTitle = titleData.title;
-            break;
-        case 'description':
-            await generateDescription(input);
-            break;
-        case 'tags':
-            await generateTags(input);
-            break;
-    }
-}
-</script>
-</body></html>
+                const data = await response.json();
+                if (data.choices && data.choices[0] && data.choices[0].text) {
+                    document.getElementById('gigTitle').textContent = data.choices[0].text.trim();
+                    document.getElementById('resultSection').style.display = 'block';
+                } else {
+                    alert('Failed to generate gig title. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while generating the gig. Please check your API key and try again.');
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
