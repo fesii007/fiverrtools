@@ -35,17 +35,6 @@
             line-height: 1.6;
             max-width: 600px;
             margin: 0 auto;
-            animation: fadeIn 0.8s ease;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
         .input-section {
             margin-bottom: 30px;
@@ -67,12 +56,9 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
-            transition: all 0.3s;
-            margin-right: 10px;
         }
         button:hover {
             background: #19a463;
-            transform: translateY(-2px);
         }
         .result-section {
             display: none;
@@ -85,13 +71,6 @@
             display: none;
             text-align: center;
             margin: 20px 0;
-        }
-        .loading svg {
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -109,18 +88,14 @@
             <textarea id="gigInput" placeholder="Enter your gig idea or title"></textarea>
             <button onclick="generateGig()">Generate Perfect Gig</button>
         </div>
-        <div class="loading" id="loading">
-            <svg width="40" height="40" viewBox="0 0 50 50">
-                <circle cx="25" cy="25" r="20" fill="none" stroke="#1dbf73" stroke-width="5" stroke-linecap="round" />
-            </svg>
-        </div>
+        <div class="loading" id="loading">Loading...</div>
         <div class="result-section" id="resultSection">
             <h3>Generated Title</h3>
             <div id="gigTitle"></div>
         </div>
     </div>
     <script>
-        const API_KEY = "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";
+        const API_KEY = "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";
 
         async function generateGig() {
             const input = document.getElementById('gigInput').value;
@@ -148,6 +123,8 @@
                 });
 
                 const data = await response.json();
+                console.log(data);
+
                 if (data.choices && data.choices[0] && data.choices[0].text) {
                     document.getElementById('gigTitle').textContent = data.choices[0].text.trim();
                     document.getElementById('resultSection').style.display = 'block';
@@ -156,7 +133,7 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred while generating the gig. Please check your API key and try again.');
+                alert('An error occurred while generating the gig. Please try again.');
             } finally {
                 document.getElementById('loading').style.display = 'none';
             }
